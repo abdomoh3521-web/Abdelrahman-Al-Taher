@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة متجر كمبيوترات - بيع وتركيبات</title>
+    <link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <a href="index.html"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+            </div>
+            <h1>متجر كمبيوترات </h1>
+            <p>أضف منتج، سجل عملية البيع، وحسب الأرباح مع سجل الأيام.</p>
+        </header>
+
+        <section class="card">
+            <h2>إضافة منتج جديد</h2>
+            <form id="product-form">
+                <label>اسم المنتج</label>
+                <input type="text" id="product-name" required placeholder="مثال: لابتوب ديل">
+
+                <label>سعر الوحدة (جنيه)</label>
+                <input type="number" id="product-price" min="1" step="0.01" required placeholder="0.00">
+
+                <button type="submit" class="primary-btn">أضف المنتج</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>المنتجات المتاحة</h2>
+            <table id="products-table">
+                <thead>
+                    <tr><th>رقم</th><th>المنتج</th><th>السعر</th><th>حذف</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h2>سجل البيع</h2>
+            <form id="sale-form">
+                <label>اختر المنتج</label>
+                <select id="sale-product" required></select>
+
+                <label>الكمية</label>
+                <input type="number" id="sale-quantity" min="1" step="1" value="1" required>
+
+                <button type="submit" class="primary-btn">سجل عملية البيع</button>
+            </form>
+
+            <div class="summary">
+                <p>إجمالي المبيعات: <strong id="total-sales">0</strong> جنيه</p>
+                <p>إجمالي الكميات المباعة: <strong id="total-items">0</strong></p>
+            </div>
+
+            <h3>سجل اليوم</h3>
+            <table id="sales-table">
+                <thead>
+                    <tr><th>التاريخ</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h2>ملخص يومي</h2>
+            <table id="daily-table">
+                <thead>
+                    <tr><th>التاريخ</th><th>المبيعات</th><th>الكمية</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 متجر الكمبيوترات وبيع ويندوز</p>
+        </footer>
+    </div>
+
+    <script src="js/shop.js"></script>
+</body>
+</html>

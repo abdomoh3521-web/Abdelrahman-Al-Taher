@@ -158,7 +158,7 @@ nav {
 
 .logo h1 {
     font-size: 1.5rem;
-    color: var(--primary-color);
+    color: #375264;
 }
 
 .nav-links {
@@ -195,8 +195,8 @@ nav {
     height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    background: linear-gradient(135deg, #17425e, #000000);
+    color: #ceebff;
     animation: fadeIn 2s ease-in-out;
 }
 
@@ -236,7 +236,7 @@ nav {
     height: 300px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid white;
+    border: 5px solid #17425e;
     box-shadow: 0 10px 30px var(--shadow);
     animation: floatImage 3s ease-in-out infinite;
 }
@@ -269,7 +269,8 @@ h2 {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    color: #2d4454;
+    color: #375264;
+    
 }
 
 /* Skills */
@@ -335,7 +336,7 @@ h2 {
 }
 
 .languages {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, #375264, #17425e);
     padding: 2rem;
     border-radius: 15px;
     color: white;

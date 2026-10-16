@@ -1,152 +1,87 @@
-// Theme Toggle Functionality
-const themeToggle = document.getElementById('theme-toggle');
-const body = document.body;
-
-// Check for saved theme preference or default to light mode
-const currentTheme = localStorage.getItem('theme') || 'light';
-if (body) {
-    body.setAttribute('data-theme', currentTheme);
-}
-
-// Update toggle icon based on current theme
-if (themeToggle) {
-    updateToggleIcon();
-
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
-        body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateToggleIcon();
-    });
-}
-
-function updateToggleIcon() {
-    if (!themeToggle) return;
-    const currentTheme = body.getAttribute('data-theme');
-    const icon = themeToggle.querySelector('i');
-    
-    if (icon) {
-        if (currentTheme === 'dark') {
-            icon.className = 'fas fa-sun';
-        } else {
-            icon.className = 'fas fa-moon';
-        }
+// Coderahman portfolio interactions
+(() => {
+  const body = document.body;
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeIcon = themeToggle?.querySelector("i");
+  const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+  let savedTheme = "light";
+  try {
+    savedTheme = localStorage.getItem("theme") || (prefersDark ? "dark" : "light");
+  } catch (_) {}
+  const applyTheme = (theme) => {
+    body?.setAttribute("data-theme", theme);
+    if (themeIcon) {
+      themeIcon.className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
     }
-}
+    themeToggle?.setAttribute("aria-label", theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن");
+    themeToggle?.setAttribute("title", theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن");
+  };
+  applyTheme(savedTheme);
+  themeToggle?.addEventListener("click", () => {
+    const nextTheme = body?.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(nextTheme);
+    try { localStorage.setItem("theme", nextTheme); } catch (_) {}
+  });
 
-// Smooth scrolling for navigation links
-if (document) {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        if (anchor) {
-            anchor.addEventListener('click', function (e) {
-                if (e) e.preventDefault();
-                
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+  // Smooth in-page navigation with a fallback for browsers without smooth scrolling.
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const selector = link.getAttribute("href");
+      if (!selector || selector === "#") return;
+      const target = document.querySelector(selector);
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    });
+  });
+
+  const heroText = document.querySelector(".hero-text");
+  const animatedSections = document.querySelectorAll(".fade-in");
+  const showVisibleSections = () => {
+    animatedSections.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 40 && rect.bottom > 0) {
+        element.classList.add("visible");
+      }
+    });
+    if (heroText) heroText.classList.toggle("hidden", window.scrollY > 160);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          obs.unobserve(entry.target);
         }
-    });
-}
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -30px 0px" });
+    animatedSections.forEach((section) => observer.observe(section));
+  } else {
+    animatedSections.forEach((section) => section.classList.add("visible"));
+  }
+  window.addEventListener("scroll", showVisibleSections, { passive: true });
+  window.addEventListener("load", showVisibleSections);
+  showVisibleSections();
 
-// Scroll animations
-const heroTextElement = document.querySelector('.hero-text');
-const fadeInElements = document.querySelectorAll('.fade-in');
+  // A subtle typing effect that respects reduced-motion settings.
+  const heroTitle = document.querySelector(".hero-text h2");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (heroTitle && !reducedMotion) {
+    const title = heroTitle.textContent.trim();
+    heroTitle.textContent = "";
+    let index = 0;
+    const typeNext = () => {
+      if (!heroTitle || index >= title.length) return;
+      heroTitle.textContent += title.charAt(index++);
+      window.setTimeout(typeNext, 85);
+    };
+    window.addEventListener("load", () => window.setTimeout(typeNext, 350), { once: true });
+  }
 
-
-function handleScroll() {
-    const scrollY = window.scrollY;
-    
-    // Hero text fade out on scroll
-    if (heroTextElement) {
-        if (scrollY > 100) {
-            heroTextElement.classList.add('hidden');
-        } else {
-            heroTextElement.classList.remove('hidden');
-        }
-    }
-    
-    // Fade in sections on scroll - only add visible, never remove
-    fadeInElements.forEach(element => {
-        if (element && !element.classList.contains('visible')) {
-            const rect = element.getBoundingClientRect();
-            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-            
-            // Show element if it's in viewport or close to it
-            if (rect.top < windowHeight - 50 && rect.bottom > 0) {
-                element.classList.add('visible');
-            }
-        }
-    });
-}
-
-if (window) {
-    window.addEventListener('scroll', handleScroll);
-    
-    // Initial check after a short delay to ensure DOM is ready
-    setTimeout(() => {
-        handleScroll();
-    }, 100);
-    
-    // Also check on load
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            handleScroll();
-        }, 500);
-    });
-}
-
-// Typing animation for hero text
-const heroTitle = document.querySelector('.hero-text h2');
-let originalText = '';
-let i = 0;
-
-if (heroTitle) {
-    originalText = heroTitle.textContent;
-    heroTitle.textContent = '';
-}
-
-function typeWriter() {
-    if (heroTitle && i < originalText.length) {
-        heroTitle.textContent += originalText.charAt(i);
-        i++;
-        setTimeout(typeWriter, 100);
-    }
-}
-
-// Start typing animation after page load
-if (window) {
-    window.addEventListener('load', () => {
-        setTimeout(typeWriter, 1000);
-        
-        // Make all fade-in elements visible after page load with a delay
-        setTimeout(() => {
-            fadeInElements.forEach(element => {
-                if (element) {
-                    element.classList.add('visible');
-                }
-            });
-        }, 1500);
-    });
-}
-
-// Add some interactive effects
-if (document) {
-    document.querySelectorAll('.skill-item').forEach(item => {
-        if (item) {
-            item.addEventListener('mouseenter', () => {
-                item.style.transform = 'scale(1.05) translateY(-10px)';
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                item.style.transform = 'scale(1) translateY(0)';
-            });
-        }
-    });
-}
+  // Keyboard users can see which cards are interactive; no forced inline transforms.
+  document.querySelectorAll(".skill-item, .project-item").forEach((card) => {
+    card.addEventListener("focusin", () => card.classList.add("is-focused"));
+    card.addEventListener("focusout", () => card.classList.remove("is-focused"));
+  });
+})();
